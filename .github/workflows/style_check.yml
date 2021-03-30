@@ -1,4 +1,4 @@
-name: License check
+name: Style check
 
 on: [push, pull_request]
 
