@@ -1,4 +1,4 @@
-name: Style and type checks
+name: License check
 
 on: [push, pull_request]
 
