@@ -15,6 +15,8 @@ from doctest import testmod
 
 from runtool import (
     datatypes,
+    dispatcher,
+    experiments_converter,
     recurse_config,
     runtool,
     transformations,
@@ -24,6 +26,8 @@ from runtool import (
 
 for module in (
     datatypes,
+    dispatcher,
+    experiments_converter,
     recurse_config,
     runtool,
     transformations,

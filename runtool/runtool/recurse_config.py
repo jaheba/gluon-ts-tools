@@ -11,9 +11,18 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-from functools import singledispatch
 import itertools
-from typing import Callable, Any
+from functools import singledispatch
+from itertools import chain, product
+from typing import Any, Callable
+
+from runtool.datatypes import (
+    Algorithm,
+    Algorithms,
+    Dataset,
+    Datasets,
+    Experiments,
+)
 
 
 class Versions:
@@ -50,6 +59,75 @@ class Versions:
 
     def append(self, data: Any):
         self.__root__.append(data)
+
+    def __mul__(
+        self,
+        other: "Versions",
+    ) -> Experiments:
+        """
+        Calculates the cartesian product of all items in self and other and
+        therafter calls __mul__ on each combination. Any `Experiments` objects
+        generated is merged into one `Experiments` object.
+
+        NOTE:
+            This multiplication requires that the items in `self`
+            and `other` produce `Experiments` objects when `__mul__`
+            is called. Some classes which fullfill this criteria:
+
+            * `Algorithm`
+            * `Dataset`
+            * `Algorithms`
+            * `Datasets`
+
+        In the below example we multiply two `Versions` objects.
+        One of them contains two `Algorithm` objects and the other
+        contains two `Dataset` objects. Multiplying these two objects
+        generate a `Experiments` object of lenght 4 containing all
+        combinations of the two `Versions` objects.
+
+        >>> algorithm_1 = Algorithm({"image": "1", "instance": "1"})
+        >>> algorithm_2 = Algorithm({"image": "2", "instance": "2"})
+        >>> dataset_1 = Dataset({"path": {"1": ""}})
+        >>> dataset_2 = Datasets([{"path": {"2": ""}})
+        >>> experiments = Versions([dataset_1, dataset_2]) * Versions(
+        ...     [algorithm_1, algorithm_2]
+        ... )
+        >>> assert experiments == Experiments(
+        ...     [
+        ...         Experiment.from_nodes(algorithm_1, dataset_1),
+        ...         Experiment.from_nodes(algorithm_2, dataset_1),
+        ...         Experiment.from_nodes(algorithm_1, dataset_2),
+        ...         Experiment.from_nodes(algorithm_2, dataset_2),
+        ...     ]
+        ... )
+        True
+        """
+        # multiply all children in self with all children in other
+        # and flatten the resulting list of Experiments into a
+        # single Experiments object.
+        # i.e.
+        # Versions([algorithm_1, algorithm_2]) * Versions([dataset_1, dataset_2])
+        # first becomes a list of Experiments
+        # [
+        #   Experiments([Experiment.from_nodes(algorithm_1, dataset_1)]),
+        #   Experiments([Experiment.from_nodes(algorithm_2, dataset_1)]),
+        #   Experiments([Experiment.from_nodes(algorithm_1, dataset_2)]),
+        #   Experiments([Experiment.from_nodes(algorithm_2, dataset_2)]),
+        # ]
+        # Which we then flatten to a single experiments object via chain
+        # Experiments([
+        #   Experiment.from_nodes(algorithm_1, dataset_1),
+        #   Experiment.from_nodes(algorithm_2, dataset_1),
+        #   Experiment.from_nodes(algorithm_1, dataset_2),
+        #   Experiment.from_nodes(algorithm_2, dataset_2),
+        # ])
+        return Experiments(
+            list(
+                chain.from_iterable(
+                    map(lambda item: item[0] * item[1], product(self, other))
+                )
+            )
+        )
 
 
 @singledispatch

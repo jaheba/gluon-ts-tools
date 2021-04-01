@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-from typing import Union, Any
+from typing import Any, Union
 
 
 def get_item_from_path(data: Union[dict, list], path: str) -> Any:

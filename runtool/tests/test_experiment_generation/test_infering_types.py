@@ -12,8 +12,6 @@
 # permissions and limitations under the License.
 
 from runtool.datatypes import Dataset, Algorithm, Algorithms, Datasets
-import yaml
-from typing import Union
 from runtool.runtool import infer_type
 
 ALGORITHM = {

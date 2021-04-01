@@ -12,7 +12,7 @@
 # permissions and limitations under the License.
 
 from runtool import transformer
-from runtool.runtool import load_config
+from runtool.runtool import load_config, Client
 
 
 def parse(data):

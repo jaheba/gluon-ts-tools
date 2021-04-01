@@ -11,9 +11,10 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-from functools import partial
-from typing import Any, List, Optional, Type, Union, Iterable
 from collections import UserDict, UserList
+from typing import Any, Iterable, Union
+
+from toolz.dicttoolz import valmap
 
 
 class DotDict(dict):
@@ -458,6 +459,16 @@ class Node(UserDict):
             return self.result_type([self]) + other
 
         raise TypeError
+
+    def as_dict(self):
+        def converter(value):
+            if hasattr(value, "as_dict"):
+                return value.as_dict()
+            if isinstance(value, UserDict):
+                return dict(value)
+            return value
+
+        return valmap(converter, self)
 
 
 class Algorithm(Node):

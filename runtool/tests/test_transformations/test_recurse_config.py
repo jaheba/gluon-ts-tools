@@ -11,12 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-from runtool.recurse_config import (
-    recursive_apply,
-    recursive_apply_dict,
-    recursive_apply_list,
-    Versions,
-)
+from runtool.recurse_config import Versions, recursive_apply
 
 
 def transform(node: dict):
