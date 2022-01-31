@@ -11,9 +11,21 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-from runtool import transformer
-from runtool.runtool import load_config, Client
+from setuptools import setup, find_packages
 
-
-def parse(data):
-    return transformer.apply_transformations(data)
+setup(
+    name="smily",
+    author="Amazon",
+    author_email="gluon-ts-dev@amazon.com",
+    maintainer_email="gluon-ts-dev@amazon.com",
+    packages=find_packages("."),
+    install_requires=[
+        "boto3",
+        "toolz",
+        "pydantic",
+    ],
+    extras_require={"cli": ["click", "rich"]},
+    entry_points={
+        "console_scripts": ["smily=smily.__main__:main"],
+    },
+)

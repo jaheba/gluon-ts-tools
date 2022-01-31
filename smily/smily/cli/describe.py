@@ -11,9 +11,13 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-from runtool import transformer
-from runtool.runtool import load_config, Client
+import click
+import rich
+
+from ._base import main, AliasedGroup, Resource
 
 
-def parse(data):
-    return transformer.apply_transformations(data)
+@main.command()
+@click.argument("arn", type=Resource)
+def describe(arn):
+    rich.print(arn.description())
